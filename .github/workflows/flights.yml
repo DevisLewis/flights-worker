@@ -1,0 +1,25 @@
+name: flights-push
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+
+concurrency:
+  group: flights-push
+  cancel-in-progress: false
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node flights-push.mjs
+        env:
+          FLIGHTS_HOOK_SECRET: ${{ secrets.FLIGHTS_HOOK_SECRET }}
